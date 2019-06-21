@@ -1,1 +1,8 @@
-# config
+
+.
+├── git
+│   └── .gitconfig
+├── LICENSE
+├── README.md
+└── utils
+    └── random
