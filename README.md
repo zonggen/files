@@ -1,9 +1,11 @@
 ```text
 .
-├── git
-│   └── .gitconfig
+├── dotfiles
+│   ├── .bashrc
+│   ├── .gitconfig
+│   └── .vimrc
 ├── LICENSE
 ├── README.md
 └── utils
-    └── random
+    └── import-dotfiles
 ```
