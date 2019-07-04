@@ -1,0 +1,128 @@
+#!/bin/bash
+set -eo pipefail
+
+FCOS_INSTALLER_DIR=/home/abai/git/coreos-installer
+export COREOS_ASSEMBLER_GIT=/home/abai/git/coreos-assembler
+
+cecho(){
+    RED="\033[0;31m"
+    GREEN="\033[0;32m"
+    YELLOW="\033[1;33m"
+    # ... ADD MORE COLORS
+    NC="\033[0m" # No Color
+
+    printf "${!1}${2} ${NC}\n"
+}
+
+cosa() {
+    env | grep COREOS_ASSEMBLER
+    set -x # so we can see what command gets run
+    sudo podman run --rm -ti -v ${PWD}:/srv/ --userns=host --device /dev/kvm --name cosa \
+               ${COREOS_ASSEMBLER_PRIVILEGED:+--privileged}                                          \
+               ${COREOS_ASSEMBLER_CONFIG_GIT:+-v $COREOS_ASSEMBLER_CONFIG_GIT:/srv/src/config/:ro}   \
+               ${COREOS_ASSEMBLER_GIT:+-v $COREOS_ASSEMBLER_GIT/src/:/usr/lib/coreos-assembler/:ro}  \
+               ${COREOS_ASSEMBLER_CONTAINER_RUNTIME_ARGS}                                            \
+               ${COREOS_ASSEMBLER_CONTAINER:-quay.io/coreos-assembler/coreos-assembler:latest} $@
+    rc=$?; set +x; return $rc
+}
+
+cp_installer() {
+    set -x
+    rm -rf ${PWD}/overrides/rootfs
+    mkdir -p ${PWD}/overrides/rootfs/usr/libexec/
+    mkdir -p ${PWD}/overrides/rootfs/usr/lib/dracut/modules.d/30coreos-installer/
+    cp ${FCOS_INSTALLER_DIR}/dracut/30coreos-installer/module-setup.sh ${PWD}/overrides/rootfs/usr/lib/dracut/modules.d/30coreos-installer/module-setup.sh
+    cp ${FCOS_INSTALLER_DIR}/coreos-installer ${PWD}/overrides/rootfs/usr/libexec/coreos-installer
+    set +x
+}
+
+test_installer() {
+    set -x
+    rm -f ${PWD}/fcos.qcow2 ${PWD}/builds/30/fedora-coreos-30-metal.raw* ${PWD}/builds/30/fedora-coreos-30-installer.iso
+
+    cosa buildextend-metal
+    cosa buildextend-installer --force
+    gzip ${PWD}/builds/30/fedora-coreos-30-metal.raw
+
+    qemu-img create -f qcow2 fcos.qcow2 10G
+    qemu-system-x86_64 -accel kvm -name fcos -m 2048 -cpu host -smp 2 -netdev user,id=eth0,hostname=coreos \
+                       -device virtio-net-pci,netdev=eth0 -drive file=${PWD}/fcos.qcow2,format=qcow2 \
+                       -cdrom ${PWD}/builds/30/fedora-coreos-30-installer.iso
+    set +x
+}
+
+print_help(){
+    cecho "GREEN"\
+        "options:\n\
+            -c | --clean-dir: rm whole dir except auto-cosa\n\
+            -i | --init: cosa init\n\
+            -f | --fetch: cosa fetch\n\
+            -b | --build: cosa build\n\
+            -r | --run: cosa run\n\
+            --clean: cosa clean\n\
+            --cosi: cp installer to overrides/rootfs\n\
+            --test-installer: clean install fcos using bare metal and installer iso"
+    exit 1
+}
+
+if [[ "$#" -eq 0 ]]; then
+    print_help
+fi
+
+# Call getopt to validate the provided input.
+rc=0
+options=$(getopt --options=hcifbr --longoptions=help,clean-dir,init,fetch,build,run,clean,cosi,test-installer -- "$@") || rc=$?
+[ $rc -eq 0 ] || {
+    print_help
+    exit 1
+}
+eval set -- "$options"
+while true; do
+    set -x
+    case "$1" in
+        -e | --env)
+            setup_env
+            ;;
+        -h | --help)
+            print_help
+            ;;
+        -c | --clean-dir)
+            shopt -s extglob
+            $(rm -rf !(auto-cosa))
+            ;;
+        -i | --init)
+            cosa init --force https://github.com/coreos/fedora-coreos-config
+            ;;
+        -f | --fetch)
+            cosa fetch
+            ;;
+        -b | --build)
+            cosa build
+            ;;
+        -r | --run)
+            cosa run
+            ;;
+        --clean)
+            cosa clean
+            ;;
+        --cosi)
+            cp_installer
+            ;;
+        --test-installer)
+            test_installer
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            cecho "RED"  "$0: unrecognized option: $1"
+            exit 1
+            ;;
+        *)
+            break
+            ;;
+    esac
+    set +x
+    shift
+done
