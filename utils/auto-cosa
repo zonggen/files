@@ -32,6 +32,7 @@ cp_installer() {
     mkdir -p ${PWD}/overrides/rootfs/usr/libexec/
     mkdir -p ${PWD}/overrides/rootfs/usr/lib/dracut/modules.d/30coreos-installer/
     cp ${FCOS_INSTALLER_DIR}/dracut/30coreos-installer/module-setup.sh ${PWD}/overrides/rootfs/usr/lib/dracut/modules.d/30coreos-installer/module-setup.sh
+    cp ${FCOS_INSTALLER_DIR}/dracut/30coreos-installer/parse-coreos.sh ${PWD}/overrides/rootfs/usr/lib/dracut/modules.d/30coreos-installer/parse-coreos.sh
     cp ${FCOS_INSTALLER_DIR}/coreos-installer ${PWD}/overrides/rootfs/usr/libexec/coreos-installer
     set +x
 }
@@ -106,6 +107,22 @@ test_installer() {
     set +x
 }
 
+test_ignition_dracut() {
+    set -x
+
+    cd ../ignition
+    spectool -g ignition.spec
+    sudo dnf -y builddep ignition.spec
+    fedpkg local
+    cd -
+
+    rm -rf overrides/rpm/*
+    cp ../ignition/x86_64/* overrides/rpm/
+
+    cosa build --force-nocache
+    cosa run
+}
+
 print_help(){
     cecho "GREEN"\
         "options:\n\
@@ -117,7 +134,8 @@ print_help(){
             --clean: cosa clean\n\
             --cp-installer: cp installer to overrides/rootfs\n\
             --base-ign: build base.ign in builds/30/base.ign\n\
-            --test-installer: clean install fcos using bare metal and installer iso"
+            --test-installer: clean install fcos using bare metal and installer iso\n\
+            --test-ignition-dracut: build ignition rpm && cosa build && cosa run"
     exit 1
 }
 
@@ -127,7 +145,7 @@ fi
 
 # Call getopt to validate the provided input.
 rc=0
-options=$(getopt --options=hcifbr --longoptions=help,clean-dir,init,fetch,build,run,clean,cp-installer,base-ign,test-installer -- "$@") || rc=$?
+options=$(getopt --options=hcifbr --longoptions=help,clean-dir,init,fetch,build,run,clean,cp-installer,base-ign,test-installer,test-ignition-dracut -- "$@") || rc=$?
 [ $rc -eq 0 ] || {
     print_help
     exit 1
@@ -169,6 +187,9 @@ while true; do
             ;;
         --test-installer)
             test_installer
+            ;;
+        --test-ignition-dracut)
+            test_ignition_dracut
             ;;
         --)
             shift
