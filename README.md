@@ -1,11 +1,11 @@
 ```text
+$ tree -I .git/ -L 2 .
+
 .
 ├── dotfiles
-│   ├── .bashrc
-│   ├── .gitconfig
-│   └── .vimrc
 ├── LICENSE
 ├── README.md
 └── utils
+    ├── auto-cosa
     └── import-dotfiles
 ```
