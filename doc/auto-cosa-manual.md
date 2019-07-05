@@ -6,12 +6,13 @@ Directory structure on my machine:
 ├── coreos-assembler
 ├── coreos-installer
 └── fcos
+    └── auto-cosa
 ```
 
 Commandline pipeline:
 
 ```bash
-# inside /my/fcos/dir, 
+# inside /my/fcos/dir,
 # generated from https://github.com/coreos/coreos-assembler#setup
 ./auto-cosa -i --cp-installer -f -b --test-installer
 ```
