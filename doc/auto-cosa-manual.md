@@ -18,7 +18,7 @@ Commandline pipeline:
 ./auto-cosa -i --cp-installer -f -b
 
 # start http server
-cd builds/30 &&  python3 -m http.server 8080 && cd -
+cd builds/30 && python3 -m http.server 8080 && cd -
 ./auto-cosa --test-installer
 ```
 
