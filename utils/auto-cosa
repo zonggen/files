@@ -36,9 +36,64 @@ cp_installer() {
     set +x
 }
 
+base_ign(){
+    local f="${PWD}/builds/30/base.ign"
+    # Get target architecture
+    local arch=$(uname -m)
+
+    case $arch in
+        "x86_64")  VM_TERMINAL="ttyS0"    ;;
+        "ppc64le") VM_TERMINAL="hvc0"     ;;
+        "aarch64") VM_TERMINAL="ttyAMA0"  ;;
+        "s390x")   VM_TERMINAL="ttysclp0" ;;
+        *)         cecho "RED" "Architecture $(arch) not supported"
+    esac
+
+    rm -f "${f}"
+    touch "${f}"
+    cat > "${f}" <<EOF
+{
+    "ignition": {
+        "version": "3.0.0"
+    },
+    "storage": {
+        "files": [
+            {
+                "path": "/etc/sysctl.d/10-coreos-assembler.conf",
+                "contents": { "source": "data:text/plain;base64,${coreos_assembler_sysctl}" },
+                "mode": 420
+            },
+            {
+                "path": "/etc/motd",
+                "append": [
+                    { "source": "data:text/plain;base64,${coreos_assembler_motd}" }
+                ],
+                "mode": 420
+            }
+        ]
+    },
+    "systemd": {
+        "units": [
+            {
+                "name": "serial-getty@${VM_TERMINAL}.service",
+                "dropins": [
+                    {
+                        "name": "autologin-core.conf",
+                        "contents": "[Service]\\nTTYVTDisallocate=no\\nExecStart=\\nExecStart=-/usr/sbin/agetty --autologin core --noclear %I \$TERM\\n"
+                    }
+                ]
+            }
+            ${ign_var_srv_mount}
+        ]
+    }
+}
+EOF
+}
+
 test_installer() {
     set -x
     rm -f ${PWD}/fcos.qcow2 ${PWD}/builds/30/fedora-coreos-30-metal.raw* ${PWD}/builds/30/fedora-coreos-30-installer.iso
+    base_ign
 
     cosa buildextend-metal
     cosa buildextend-installer --force
@@ -60,7 +115,8 @@ print_help(){
             -b | --build: cosa build\n\
             -r | --run: cosa run\n\
             --clean: cosa clean\n\
-            --cosi: cp installer to overrides/rootfs\n\
+            --cp-installer: cp installer to overrides/rootfs\n\
+            --base-ign: build base.ign in builds/30/base.ign\n\
             --test-installer: clean install fcos using bare metal and installer iso"
     exit 1
 }
@@ -71,7 +127,7 @@ fi
 
 # Call getopt to validate the provided input.
 rc=0
-options=$(getopt --options=hcifbr --longoptions=help,clean-dir,init,fetch,build,run,clean,cosi,test-installer -- "$@") || rc=$?
+options=$(getopt --options=hcifbr --longoptions=help,clean-dir,init,fetch,build,run,clean,cp-installer,base-ign,test-installer -- "$@") || rc=$?
 [ $rc -eq 0 ] || {
     print_help
     exit 1
@@ -105,8 +161,11 @@ while true; do
         --clean)
             cosa clean
             ;;
-        --cosi)
+        --cp-installer)
             cp_installer
+            ;;
+        --base-ign)
+            base_ign
             ;;
         --test-installer)
             test_installer
