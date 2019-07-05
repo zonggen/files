@@ -12,9 +12,14 @@ Directory structure on my machine:
 Commandline pipeline:
 
 ```bash
-# inside /my/fcos/dir,
+# inside /my/fcos/,
 # generated from https://github.com/coreos/coreos-assembler#setup
-./auto-cosa -i --cp-installer -f -b --test-installer
+# init, cp modified installer code, fetch, build
+./auto-cosa -i --cp-installer -f -b
+
+# start http server
+cd builds/30 &&  python3 -m http.server 8080 && cd -
+./auto-cosa --test-installer
 ```
 
 Related repositories:
