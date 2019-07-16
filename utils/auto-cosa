@@ -110,14 +110,21 @@ test_installer() {
 test_ignition_dracut() {
     set -x
 
-    cd ../ignition
+    if [ ! -d ../fedora-rpm/ignition ]; then
+        mkdir -p ../fedora-rpm
+        git clone https://src.fedoraproject.org/rpms/ignition.git
+        echo "ignition rpm repo cloned, please modify first!"
+        exit 1
+    fi
+
+    cd ../fedora-rpm
     spectool -g ignition.spec
     sudo dnf -y builddep ignition.spec
     fedpkg local
     cd -
 
     rm -rf overrides/rpm/*
-    cp ../ignition/x86_64/* overrides/rpm/
+    cp ../fedora-rpm/ignition/x86_64/* overrides/rpm/
 
     cosa build --force-nocache
     cosa run

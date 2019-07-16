@@ -5,6 +5,8 @@ Directory structure on my machine:
 .
 ├── coreos-assembler
 ├── coreos-installer
+├── fedora-rpm
+    └── ignition
 └── fcos
     └── auto-cosa
 ```
