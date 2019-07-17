@@ -2,6 +2,7 @@
 set -eo pipefail
 
 FCOS_INSTALLER_DIR=/home/abai/git/coreos-installer
+LATEST_BUILD=${PWD}/builds/latest
 export COREOS_ASSEMBLER_GIT=/home/abai/git/coreos-assembler
 
 cecho(){
@@ -38,7 +39,7 @@ cp_installer() {
 }
 
 base_ign(){
-    local f="${PWD}/builds/30/base.ign"
+    local f="${LATEST_BUILD}/base.ign"
     # Get target architecture
     local arch=$(uname -m)
 
@@ -93,17 +94,19 @@ EOF
 
 test_installer() {
     set -x
-    rm -f ${PWD}/fcos.qcow2 ${PWD}/builds/30/fedora-coreos-30-metal.raw* ${PWD}/builds/30/fedora-coreos-30-installer.iso
+    local metal_img=$(ls ${LATEST_BUILD} | grep ".*metal\.raw$\.gz")
+    local installer_iso=$(ls ${LATEST_BUILD} | grep ".*installer\.iso$")
+    rm -f ${PWD}/fcos.qcow2 ${LATEST_BUILD}/${metal_img} ${LATEST_BUILD}/${installer_iso}
     base_ign
 
     cosa buildextend-metal
     cosa buildextend-installer --force
-    gzip ${PWD}/builds/30/fedora-coreos-30-metal.raw
+    gzip ${LATEST_BUILD}/${metal_img}
 
     qemu-img create -f qcow2 fcos.qcow2 10G
     qemu-system-x86_64 -accel kvm -name fcos -m 2048 -cpu host -smp 2 -netdev user,id=eth0,hostname=coreos \
                        -device virtio-net-pci,netdev=eth0 -drive file=${PWD}/fcos.qcow2,format=qcow2 \
-                       -cdrom ${PWD}/builds/30/fedora-coreos-30-installer.iso
+                       -cdrom ${LATEST_BUILD}/${installer_iso}
     set +x
 }
 
@@ -140,7 +143,7 @@ print_help(){
             -r | --run: cosa run\n\
             --clean: cosa clean\n\
             --cp-installer: cp installer to overrides/rootfs\n\
-            --base-ign: build base.ign in builds/30/base.ign\n\
+            --base-ign: build base.ign in builds/latest/base.ign\n\
             --test-installer: clean install fcos using bare metal and installer iso\n\
             --test-ignition-dracut: build ignition rpm && cosa build && cosa run"
     exit 1
