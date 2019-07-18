@@ -32,7 +32,7 @@ cp_installer() {
     rm -rf ${PWD}/overrides/rootfs
     mkdir -p ${PWD}/overrides/rootfs/usr/libexec/
     mkdir -p ${PWD}/overrides/rootfs/usr/lib/dracut/modules.d/30coreos-installer/
-    cp ${FCOS_INSTALLER_DIR}/dracut/30coreos-installer/module-setup.sh ${PWD}/overrides/rootfs/usr/lib/dracut/modules.d/30coreos-installer/module-setup.sh
+    # cp ${FCOS_INSTALLER_DIR}/dracut/30coreos-installer/module-setup.sh ${PWD}/overrides/rootfs/usr/lib/dracut/modules.d/30coreos-installer/module-setup.sh
     cp ${FCOS_INSTALLER_DIR}/dracut/30coreos-installer/parse-coreos.sh ${PWD}/overrides/rootfs/usr/lib/dracut/modules.d/30coreos-installer/parse-coreos.sh
     cp ${FCOS_INSTALLER_DIR}/coreos-installer ${PWD}/overrides/rootfs/usr/libexec/coreos-installer
     set +x
@@ -94,9 +94,18 @@ EOF
 
 test_installer() {
     set -x
-    local metal_img=$(ls ${LATEST_BUILD} | grep ".*metal\.raw$\.gz")
+    local metal_img_gz=$(ls ${LATEST_BUILD} | grep ".*metal\.raw\.gz$")
+    local metal_img=$(ls ${LATEST_BUILD} | grep ".*metal\.raw$")
     local installer_iso=$(ls ${LATEST_BUILD} | grep ".*installer\.iso$")
-    rm -f ${PWD}/fcos.qcow2 ${LATEST_BUILD}/${metal_img} ${LATEST_BUILD}/${installer_iso}
+
+    if [[ ! -z ${metal_img_gz} ]]; then
+        rm -f ${PWD}/fcos.qcow2 ${LATEST_BUILD}/${metal_img_gz}
+    fi
+
+    if [[ ! -z ${installer_iso} ]]; then
+        rm -f ${PWD}/fcos.qcow2 ${LATEST_BUILD}/${installer_iso}
+    fi
+
     base_ign
 
     cosa buildextend-metal
@@ -120,7 +129,7 @@ test_ignition_dracut() {
         exit 1
     fi
 
-    cd ../fedora-rpm
+    cd ../fedora-rpm/ignition
     spectool -g ignition.spec
     sudo dnf -y builddep ignition.spec
     fedpkg local
