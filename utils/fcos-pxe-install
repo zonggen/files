@@ -1,6 +1,8 @@
 #!/bin/bash
 set -exo pipefail
 
+# Refernce: https://dustymabe.com/2019/01/04/easy-pxe-boot-testing-with-only-http-using-ipxe-and-libvirt/
+
 export ISO_NAME=fedora-coreos-30.20190801.0-installer.iso
 export RAW_NAME=fedora-coreos-30.20190801.0-metal.raw.xz
 
@@ -11,10 +13,13 @@ echo "setup syslinux-nonlinux"
 sudo dnf install -y syslinux-nonlinux
 cp /usr/share/syslinux/{pxelinux.0,ldlinux.c32} ./
 
+echo "downloading metal image"
+wget -O $RAW_NAME $RAW_LINK
+
 echo "downloading iso image"
 mkdir .download && cd .download
 wget -O $ISO_NAME $ISO_LINK
-ISO_PATH=$(readlink -f $ISO_NAME)
+export ISO_PATH=$(readlink -f $ISO_NAME)
 cd ..
 
 echo "mounting iso image"
@@ -85,6 +90,9 @@ cat <<EOF > config.ign
     }
 }
 EOF
+
+echo "Finish setup"
+echo "Add <bootp file='http://192.168.124.1:8000/pxelinux.0'/> under <dhcp></dhcp>"
 
 # sudo python3 -m http.server
 # sudo virsh net-destroy default
