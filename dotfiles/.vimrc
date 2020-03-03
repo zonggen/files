@@ -14,6 +14,8 @@ Plugin 'VundleVim/Vundle.vim'
 
 " My own plugins
 Plugin 'airblade/vim-gitgutter'
+" https://vimawesome.com/plugin/json-vim
+Plugin 'elzr/vim-json'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
