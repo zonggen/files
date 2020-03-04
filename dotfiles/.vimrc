@@ -21,6 +21,8 @@ Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 " https://github.com/flazz/vim-colorschemes
 Plugin 'flazz/vim-colorschemes'
+" https://vimawesome.com/plugin/bash-support-vim
+Plugin 'bash-support.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
