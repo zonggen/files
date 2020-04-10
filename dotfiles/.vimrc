@@ -23,6 +23,8 @@ Plugin 'plasticboy/vim-markdown'
 Plugin 'flazz/vim-colorschemes'
 " https://vimawesome.com/plugin/bash-support-vim
 Plugin 'bash-support.vim'
+" https://vimawesome.com/plugin/vim-fish
+Plugin 'dag/vim-fish'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
