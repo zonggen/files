@@ -25,6 +25,18 @@ Plugin 'flazz/vim-colorschemes'
 Plugin 'bash-support.vim'
 " https://vimawesome.com/plugin/vim-fish
 Plugin 'dag/vim-fish'
+" https://github.com/frazrepo/vim-rainbow
+Plugin 'frazrepo/vim-rainbow'
+" https://github.com/preservim/nerdtree
+Plugin 'preservim/nerdtree'
+" https://github.com/preservim/nerdcommenter
+Plugin 'preservim/nerdcommenter'
+" https://github.com/Yggdroot/indentLine
+Plugin 'Yggdroot/indentLine'
+" https://github.com/ntpeters/vim-better-whitespace
+Plugin 'ntpeters/vim-better-whitespace'
+" https://github.com/Xuyuanp/nerdtree-git-plugin
+Plugin 'Xuyuanp/nerdtree-git-plugin'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -71,4 +83,9 @@ set t_Co=256
 set cursorline
 syntax on
 colorscheme molokai
+
+" enable vim-rainbow
+let g:rainbow_active = 1
+" custom shortcuts
+map <C-n> :NERDTreeToggle<CR>
 
