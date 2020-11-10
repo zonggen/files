@@ -93,6 +93,10 @@ let g:rainbow_active = 1
 
 " Custom shortcuts
 map <C-n> :NERDTreeToggle<CR>
+nnoremap <C-Left> :tabprevious<CR>
+nnoremap <C-Right> :tabnext<CR>
+nnoremap <C-j> :tabprevious<CR>
+nnoremap <C-k> :tabnext<CR>
 
 " Show spaces as dots
 let g:indentLine_leadingSpaceChar='·'
