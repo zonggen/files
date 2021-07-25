@@ -1,4 +1,67 @@
+[color]
+	ui = true
+	# We use always here instead of auto because otherwise
+	# we don't get any coloring with Ggrep in vim.
+	grep = always
+[color "grep"]
+	linenumber = green
+	match = red bold
+	filename = magenta
+[merge]
+	conflictstyle = diff3
+[user]
+	name = Allen Bai
+	email = abai@redhat.com
+	signingkey = 6214CCF7
+[core]
+    editor = nvim
 [alias]
-    # usage : git pr 123 ; git pr-clean
-    pr = '!f() { git fetch -fu ${2:-upstream} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f'
-    pr-clean = '!git checkout master ; git for-each-ref refs/heads/pr/* --format="%(refname)" | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done'
+	cam = commit -am
+	scrap = reset --hard HEAD
+	nuke = reset --hard HEAD^
+	origin = reset --hard origin/master
+	last = log -1 HEAD
+	ck = checkout
+	amend = commit --amend
+	amendit = commit --amend --no-edit
+	fix = commit --amend --no-edit -a
+	cm = checkout master
+	rlog = ! sh -c 'git log --reverse --ancestry-path $1^..HEAD' - 2>/dev/null
+	l = log --pretty=oneline
+	la = log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short
+	lg = log --graph --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short
+	h = log --graph --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short -n 10
+	hh = log --graph --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short -n 20
+	restamp = "! git commit --amend --no-edit --date=\"$(date -R)\""
+	odiff = diff origin/master
+	udiff = diff upstream/master
+	subu = submodule update
+    rebase-ours = rebase -Xours
+    rebase-theirs = rebase -Xtheirs
+    merge-ours = merge -Xours
+    merge-theirs = merge -Xtheirs
+    update = add -u
+[push]
+	default = simple
+[diff]
+	algorithm = patience
+	renames = copies
+	indentHeuristic = true
+	compactionHeuristic = true
+[commit]
+    gpgsign = true
+	verbose = true
+[pager]
+	log = diff-highlight | less -FRSX
+	show = diff-highlight | less -FRSX
+	diff = diff-highlight | less -FRSX
+[color "diff-highlight"]
+	oldNormal    = "black #f8cbcb"
+	oldHighlight = "black #ff8888"
+	newNormal    = "black #cbeecb"
+	newHighlight = "black #aaffaa"
+[rebase]
+	autostash = true
+[grep]
+	lineNumber = true
+
