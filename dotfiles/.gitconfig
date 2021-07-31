@@ -16,6 +16,7 @@
 [core]
     editor = nvim
 [alias]
+    s = status
 	cam = commit -am
 	scrap = reset --hard HEAD
 	nuke = reset --hard HEAD^
@@ -25,7 +26,8 @@
 	amend = commit --amend
 	amendit = commit --amend --no-edit
 	fix = commit --amend --no-edit -a
-	cm = checkout master
+	cmaster = checkout master
+    cmain = checkout main
 	rlog = ! sh -c 'git log --reverse --ancestry-path $1^..HEAD' - 2>/dev/null
 	l = log --pretty=oneline
 	la = log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short
