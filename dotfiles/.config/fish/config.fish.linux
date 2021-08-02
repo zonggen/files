@@ -1,0 +1,11 @@
+contains $HOME/.cargo/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/.cargo/bin
+contains $HOME/go/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/go/bin
+contains $HOME/crc $fish_user_paths; or set -Ua fish_user_paths $HOME/crc
+
+alias vim="nvim"
+alias lla='ls -lAFh'
+alias vim_config='nvim ~/.config/nvim/init.vim'
+
+function fish_greeting
+    # fortune
+end

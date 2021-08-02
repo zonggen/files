@@ -9,6 +9,10 @@ $ tree -a -L 2 -I .git
 │   └── extensions.yaml
 ├── dotfiles
 │   ├── .bashrc
+│   ├── .config
+│   │   └── fish
+│   │       ├── config.fish.linux
+│   │       └── config.fish.macos
 │   ├── .gitconfig
 │   ├── init.vim
 │   ├── .tmux.conf
