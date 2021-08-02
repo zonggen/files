@@ -10,11 +10,12 @@ $ tree -a -L 2 -I .git
 ├── dotfiles
 │   ├── .bashrc
 │   ├── .config
-│   │   └── fish
-│   │       ├── config.fish.linux
-│   │       └── config.fish.macos
+│   │   ├── fish
+│   │   │   ├── config.fish.linux
+│   │   │   └── config.fish.macos
+│   │   └── nvim
+│   │       └── init.vim
 │   ├── .gitconfig
-│   ├── init.vim
 │   ├── .tmux.conf
 │   ├── .tmux.conf.f30
 │   └── .vimrc
