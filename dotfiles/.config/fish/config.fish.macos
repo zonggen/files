@@ -1,0 +1,24 @@
+#if status is-interactive
+#and not set -q TMUX
+#    exec tmux
+#end
+
+contains (brew --prefix golang)/libexec $GOROOT; or set -Ua GOROOT (brew --prefix golang)/libexec
+contains $HOME/go $GOPATH; or set -Ua GOPATH $HOME/go
+
+contains $GOPATH/bin $fish_user_paths; or set -Ua fish_user_paths $GOPATH/bin
+contains $GOROOT/bin $fish_user_paths; or set -Ua fish_user_paths $GOROOT/bin
+contains $HOME/.cargo/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/.cargo/bin
+contains /usr/local/opt/ruby/bin $fish_user_paths; or set -Ua fish_user_paths /usr/local/opt/ruby/bin
+contains $HOME/.gem/ruby/2.7.0/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/.gem/ruby/2.7.0/bin
+contains $HOME/opt/anaconda3/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/opt/anaconda3/bin
+
+alias ll='ls -lFh'
+alias lla='ls -lAFh'
+alias vim='nvim'
+alias vim_config='nvim ~/.config/nvim/init.vim'
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+eval $HOME/opt/anaconda3/bin/conda "shell.fish" "hook" $argv | source
+# <<< conda initialize <<<
