@@ -16,12 +16,15 @@
 [core]
     editor = nvim
 [alias]
-    s = status
-	cam = commit -am
+    s = status -sb
+    c = commit -s
+    rv = remote -v
+    gl = config --global -l
+	cam = commit -sam
 	scrap = reset --hard HEAD
 	nuke = reset --hard HEAD^
 	origin = reset --hard origin/master
-	last = log -1 HEAD
+	last = log -1 HEAD --stat
 	ck = checkout
 	amend = commit --amend
 	amendit = commit --amend --no-edit
