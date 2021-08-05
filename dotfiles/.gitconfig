@@ -1,72 +1,73 @@
 [color]
-	ui = true
-	# We use always here instead of auto because otherwise
-	# we don't get any coloring with Ggrep in vim.
-	grep = always
+    ui = true
+    # We use always here instead of auto because otherwise
+    # we don't get any coloring with Ggrep in vim.
+    grep = always
 [color "grep"]
-	linenumber = green
-	match = red bold
-	filename = magenta
+    linenumber = green
+    match = red bold
+    filename = magenta
 [merge]
-	conflictstyle = diff3
+    conflictstyle = diff3
 [user]
-	name = Allen Bai
-	email = abai@redhat.com
-	signingkey = 6214CCF7
+    name = Allen Bai
+    email = abai@redhat.com
+    signingkey = 6214CCF7
 [core]
     editor = nvim
 [alias]
+    b = branch -vv
     s = status -sb
     c = commit -s
     rv = remote -v
     gl = config --global -l
-	cam = commit -sam
-	scrap = reset --hard HEAD
-	nuke = reset --hard HEAD^
-	origin = reset --hard origin/master
-	last = log -1 HEAD --stat
-	ck = checkout
-	amend = commit --amend
-	amendit = commit --amend --no-edit
-	fix = commit --amend --no-edit -a
-	cmaster = checkout master
+    cam = commit -sam
+    scrap = reset --hard HEAD
+    nuke = reset --hard HEAD^
+    origin = reset --hard origin/master
+    last = log -1 HEAD --stat
+    ck = checkout
+    amend = commit --amend
+    amendit = commit --amend --no-edit
+    fix = commit --amend --no-edit -a
+    cmaster = checkout master
     cmain = checkout main
-	rlog = ! sh -c 'git log --reverse --ancestry-path $1^..HEAD' - 2>/dev/null
-	l = log --pretty=oneline
-	la = log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short
-	lg = log --graph --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short
-	h = log --graph --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short -n 10
-	hh = log --graph --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short -n 20
-	restamp = "! git commit --amend --no-edit --date=\"$(date -R)\""
-	odiff = diff origin/master
-	udiff = diff upstream/master
-	subu = submodule update
+    rlog = ! sh -c 'git log --reverse --ancestry-path $1^..HEAD' - 2>/dev/null
+    l = log --pretty=oneline
+    la = log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short
+    lg = log --graph --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short
+    h = log --graph --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short -n 10
+    hh = log --graph --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short -n 20
+    restamp = "! git commit --amend --no-edit --date=\"$(date -R)\""
+    odiff = diff origin/master
+    udiff = diff upstream/master
+    subu = submodule update
     rebase-ours = rebase -Xours
     rebase-theirs = rebase -Xtheirs
     merge-ours = merge -Xours
     merge-theirs = merge -Xtheirs
     update = add -u
 [push]
-	default = simple
+    default = simple
 [diff]
-	algorithm = patience
-	renames = copies
-	indentHeuristic = true
-	compactionHeuristic = true
+    algorithm = patience
+    renames = copies
+    indentHeuristic = true
+    compactionHeuristic = true
 [commit]
     gpgsign = true
-	verbose = true
+    verbose = true
 [pager]
-	log = diff-highlight | less -FRSX
-	show = diff-highlight | less -FRSX
-	diff = diff-highlight | less -FRSX
+    log = diff-highlight | less -FRSX
+    show = diff-highlight | less -FRSX
+    diff = diff-highlight | less -FRSX
 [color "diff-highlight"]
-	oldNormal    = "black #f8cbcb"
-	oldHighlight = "black #ff8888"
-	newNormal    = "black #cbeecb"
-	newHighlight = "black #aaffaa"
+    oldNormal    = "black #f8cbcb"
+    oldHighlight = "black #ff8888"
+    newNormal    = "black #cbeecb"
+    newHighlight = "black #aaffaa"
 [rebase]
-	autostash = true
+    autostash = true
 [grep]
-	lineNumber = true
+    lineNumber = true
 
