@@ -21,6 +21,8 @@
     c = commit -s
     rv = remote -v
     gl = config --global -l
+    save = stash
+    pop = stash pop
     cam = commit -sam
     scrap = reset --hard HEAD
     nuke = reset --hard HEAD^
@@ -71,3 +73,8 @@
 [grep]
     lineNumber = true
 
+[pull]
+    rebase = true
+
+[init]
+    defaultBranch = main
