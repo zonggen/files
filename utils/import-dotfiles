@@ -1,5 +1,0 @@
-#!/bin/bash
-set -x
-
-cp -f ~/.bashrc ../dotfiles/.bashrc
-cp -f ~/.vimrc ../dotfiles/.vimrc
