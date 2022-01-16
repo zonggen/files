@@ -72,9 +72,7 @@
 	autostash = true
 [grep]
 	lineNumber = true
-
 [pull]
 	rebase = true
-
 [init]
 	defaultBranch = main
