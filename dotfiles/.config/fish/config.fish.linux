@@ -1,8 +1,11 @@
+set CURRENT_GO $HOME/go.1.17
+
 contains $HOME/.cargo/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/.cargo/bin
-contains $HOME/go/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/go/bin
+contains $CURRENT_GO/bin $fish_user_paths; or set -Ua fish_user_paths $CURRENT_GO/bin
 contains $HOME/crc $fish_user_paths; or set -Ua fish_user_paths $HOME/crc
 contains $HOME/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/bin
 set -x GOPATH (go env GOPATH)
+set -gx EDITOR nvim
 
 # homebrew
 # result of "eval \"\$($(brew --prefix)/bin/brew shellenv)\""
