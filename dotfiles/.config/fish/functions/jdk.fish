@@ -9,9 +9,9 @@ function jdk --description "List and set JDK versions"
   argparse $options -- $argv
 
   if set --query _flag_list
-    printf "/usr/libexec/java_home -V\n\n"
+    printf "\$ /usr/libexec/java_home -V\n"
     /usr/libexec/java_home -V
-    printf "ls -l /Library/Java/JavaVirtualMachines"
+    printf "\n\$ ls -l /Library/Java/JavaVirtualMachines\n"
     ls -l /Library/Java/JavaVirtualMachines
     return 0
   end
