@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+
+import argparse
+import platform
+import subprocess
+import sys
+import re
+
+IPV4_REGEX = r"((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}"
+IPV6_REGEX = r"(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))"
+PORT_REGEX = r"([0-9]+)"
+LINUX_COMMAND = ["sudo", "netstat", "-tulpn"]
+MACOS_COMMAND = ["sudo", "lsof", "-nP", "-iTCP", "-sTCP:LISTEN"]
+LINUX_SYSTEM = "Linux"
+MACOS_SYSTEM = "Darwin"
+
+def main():
+    system = platform.system()
+    if system not in [LINUX_SYSTEM, MACOS_SYSTEM]:
+        print(f"Only support Linux and MacOS: {system}", file=sys.stderr)
+        sys.exit(1)
+
+    parser = argparse.ArgumentParser(
+        description='Grep process(es) that occupy the port.')
+    parser.add_argument('ports', metavar='P', type=int, nargs='+',
+                        help='an integer representing a port')
+    parser.add_argument('--show-line', action='store_true', dest='show_line',
+                        help="show full line of netstat")
+
+    args = parser.parse_args()
+    if system == LINUX_SYSTEM:
+        out = subprocess.run(LINUX_COMMAND, capture_output=True)
+    else:
+        out = subprocess.run(MACOS_COMMAND, capture_output=True)
+    err = out.stderr.decode("utf-8")
+    if err.strip():
+        print(err.strip(), file=sys.stderr)
+        sys.exit(1)
+    else:
+        out = out.stdout.decode("utf-8")
+        lines = out.splitlines(False)
+        process_to_print = []
+        lines_to_print = []
+        for l in lines:
+            is_ipv4_match = any(re.compile(
+                fr"{IPV4_REGEX}\:{p}").search(l) for p in args.ports)
+            is_ipv6_match = any(re.compile(
+                fr"{IPV6_REGEX}\:{p}").search(l) for p in args.ports)
+            is_star_match = any(re.compile(fr"\*\:{p}").search(l) for p in args.ports)
+            if any([is_ipv4_match, is_ipv6_match, is_star_match]):
+                lines_to_print.append(l)
+                if system == LINUX_SYSTEM:
+                    pid_program_name = l.split()[-1]
+                else:
+                    pid_program_name = l.split()[1]
+                process_to_print.extend(
+                    [p.group() for p in re.finditer(PORT_REGEX, pid_program_name)])
+        else:
+            if len(process_to_print) == 0 or len(lines_to_print) == 0:
+                sys.exit(1)
+        if args.show_line:
+            for l in lines_to_print:
+                print(l, file=sys.stdout)
+        else:
+            process_to_print = set(process_to_print)
+            for p in process_to_print:
+                print(p, file=sys.stdout)
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
