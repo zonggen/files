@@ -18,8 +18,8 @@ function peco_change_directory
     # add the list of directory you want to search for
     z -l | awk '{print $2}'
     # search $HOME and $PWD
-    find $HOME -maxdepth 2 -type d ! -path '*/.git' ! -path '*/.git/*'
-    test $PWD != $HOME && find $PWD -type d ! -path '*/.git' ! -path '*/.git/*'
+    find $HOME -maxdepth 2 -type d ! -path '*/.git' ! -path '*/.git/*' 2> /dev/null
+    test $PWD != $HOME && find $PWD -maxdepth 2 -type d ! -path '*/.git' ! -path '*/.git/*' 2> /dev/null
   # removes trailing '/'
   # removes duplicates with awk: https://unix.stackexchange.com/a/639902
   end | sed -e 's/\/$//' | awk '!a[$0]++' | _peco_change_directory $argv
