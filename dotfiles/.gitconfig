@@ -8,13 +8,18 @@
 	match = red bold
 	filename = magenta
 [merge]
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 [user]
 	name = Allen Bai
-	email = abai@redhat.com
-	signingkey = 6214CCF7
+	email = 26239939+zonggen@users.noreply.github.com
+	signingkey = 4B143C79F3AA3386
 [core]
 	editor = nvim
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
 [alias]
 	b = branch -vv
 	s = status -sb
@@ -51,25 +56,33 @@
 	update = add -u
 [push]
 	default = simple
+	autoSetupRemote = true
 [diff]
-	algorithm = patience
+	algorithm = histogram
 	renames = copies
 	indentHeuristic = true
-	compactionHeuristic = true
+	mnemonicPrefix = true
+	colorMoved = default
+	colorMovedWS = allow-indentation-change
 [commit]
 	gpgsign = true
 	verbose = true
-[pager]
-	log = diff-highlight | less -FRSX
-	show = diff-highlight | less -FRSX
-	diff = diff-highlight | less -FRSX
-[color "diff-highlight"]
-	oldNormal    = "black #f8cbcb"
-	oldHighlight = "black #ff8888"
-	newNormal    = "black #cbeecb"
-	newHighlight = "black #aaffaa"
 [rebase]
 	autostash = true
+	updateRefs = true
+[rerere]
+	enabled = true
+[fetch]
+	prune = true
+	pruneTags = true
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
+[column]
+	ui = auto
+[help]
+	autocorrect = prompt
 [grep]
 	lineNumber = true
 [pull]
