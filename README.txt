@@ -1,6 +1,12 @@
 $ tree -a -L 2 -I .git
 
 .
+├── .claude
+│   ├── AGENTS.md
+│   ├── agents
+│   ├── rules
+│   ├── statusline-command.sh
+│   └── workflows
 ├── LICENSE
 ├── README.txt
 ├── bin
